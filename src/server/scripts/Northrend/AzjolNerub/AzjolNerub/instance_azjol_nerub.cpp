@@ -57,6 +57,7 @@ public:
             LoadObjectData(creatureData, nullptr);
         };
 
+        ObjectGuid Krikthir_OG;
         void OnCreatureCreate(Creature* creature) override
         {
             switch (creature->GetEntry())
@@ -72,6 +73,8 @@ public:
                     if (Creature* hadronox = GetCreature(DATA_HADRONOX_EVENT))
                         hadronox->AI()->JustSummoned(creature);
                     break;
+                case NPC_KRIKTHIR_THE_GATEWATCHER:
+                    Krikthir_OG = creature->GetGUID();
             }
 
             InstanceScript::OnCreatureCreate(creature);
@@ -134,6 +137,17 @@ public:
                     SetBossState(i, EncounterState(tmpState));
                 }
             }
+        }
+
+        ObjectGuid GetGuidData(uint32 identifier) const override
+        {
+            switch (identifier)
+            {
+            case 1:
+                return Krikthir_OG;
+            }
+
+            return ObjectGuid::Empty;
         }
     };
 
@@ -199,9 +213,50 @@ public:
     }
 };
 
+
+class npc_services_azjolnerub : public CreatureScript
+{
+public:
+   npc_services_azjolnerub() : CreatureScript("Npc_Services_AzjolNerub") { } //5H 困难模式！
+
+   bool OnGossipHello(Player* player, Creature* creature)
+   {
+       AddGossipItemFor(player, 10, "|TInterface\\icons\\Spell_Nature_Regenerate:40:40:-18|t 开启困难模式", GOSSIP_SENDER_MAIN, 1);			// Restore Health and Mana
+       AddGossipItemFor(player, 10, "|TInterface\\icons\\Achievement_BG_winAB_underXminutes:40:40:-18|t 关闭困难模式", GOSSIP_SENDER_MAIN, 2);	// Reset Instances
+      
+       SendGossipMenuFor(player, 1, creature->GetGUID());
+       return true;
+   }
+
+   bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+   {
+       player->PlayerTalkClass->ClearMenus();
+       InstanceScript* m_pInstance= creature->GetInstanceScript();
+       switch (action)
+       {
+       case 1:
+           CloseGossipMenuFor(player);
+           Creature * Krikthir = ObjectAccessor::GetCreature(*player, m_pInstance->GetGuidData(1));
+          // uint32 originalHealth = Krikthir->GetMaxHealth();
+           Krikthir->SetMaxHealth(12345678);
+           player->GetSession()->SendNotification("Krikthir %d", Krikthir->GetMaxHealth());
+           break;
+       case 2:
+
+           break;
+       }
+
+       return true;
+   }
+    
+};
+
+
 void AddSC_instance_azjol_nerub()
 {
+    
     new instance_azjol_nerub();
     new spell_azjol_nerub_fixate();
     new spell_azjol_nerub_web_wrap();
+    new npc_services_azjolnerub();
 }
