@@ -241,9 +241,7 @@ public:
            Krikthir->SetMaxHealth(12345678);
            player->GetSession()->SendNotification("Krikthir %d", Krikthir->GetMaxHealth());
            break;
-       case 2:
-
-           break;
+      
        }
 
        return true;
