@@ -21,6 +21,7 @@
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
 #include "ulduar.h"
+#include "Log.h"
 
 enum AssemblySpells
 {
@@ -617,6 +618,11 @@ public:
 
         bool _stunnedAchievement;
 
+       
+
+        float tempX;
+        float tempY;
+        float tempZ;
         void Reset() override
         {
             me->SetLootMode(0);
@@ -650,7 +656,7 @@ public:
             me->SetInCombatWithZone();
             events.ScheduleEvent(EVENT_ENRAGE, 900000);
             UpdatePhase();
-
+          
             if (!pInstance)
                 return;
 
@@ -750,21 +756,34 @@ public:
                     me->GetMotionMaster()->MovePoint(POINT_CHANNEL_STEELBREAKER, 1587.18f + 10.0f * cos(o), 121.02f + 10.0f * std::sin(o), 427.3f);
                 }
             }
-
+           
             if (!UpdateVictim())
                 return;
-
+           
             if (_flyPhase)
             {
-                if (Unit* flyTarget = ObjectAccessor::GetUnit(*me, _flyTargetGUID))
+                if (me->GetPositionZ()<tempZ)
                 {
-                    if (me->GetDistance2d(flyTarget) >= 6)
+                   // LOG_INFO("server.worldserver", "is Run Here! the unit is moving");
+                }
+                else
+                {
+                    if (Unit* flyTarget = ObjectAccessor::GetUnit(*me, _flyTargetGUID))
                     {
-                        //float speed = me->GetDistance(_flyTarget->GetPositionX(), _flyTarget->GetPositionY(), _flyTarget->GetPositionZ()+15) / (1500.0f * 0.001f);
-                        me->SendMonsterMove(flyTarget->GetPositionX(), flyTarget->GetPositionY(), flyTarget->GetPositionZ() + 15, 1500, SPLINEFLAG_FLYING);
-                        me->SetPosition(flyTarget->GetPositionX(), flyTarget->GetPositionY(), flyTarget->GetPositionZ(), flyTarget->GetOrientation());
+                        if (me->GetDistance2d(flyTarget) >= 6)
+                        {
+                            //LOG_INFO("server.worldserver", "is Run Here! the unit is NOT moving'{}'",flyTarget->GetName());
+                            //  float speed = me->GetDistance(flyTarget->GetPositionX(), flyTarget->GetPositionY(), flyTarget->GetPositionZ()+15) / (1500.0f * 0.001f);
+                             // me->SendMonsterMove(flyTarget->GetPositionX(), flyTarget->GetPositionY(), flyTarget->GetPositionZ() + 15, 1500, SPLINEFLAG_FLYING); //原版
+                             me->MonsterMoveWithSpeed(flyTarget->GetPositionX(), flyTarget->GetPositionY(), tempZ, 4);
+                         //   me->GetMotionMaster()->MovePoint(2, flyTarget->GetPositionX(), flyTarget->GetPositionY(), tempZ,true,true,MOTION_SLOT_IDLE, flyTarget->GetOrientation());
+
+                         //   me->GetMotionMaster()->MoveFollow(flyTarget,0,0,MOTION_SLOT_IDLE);
+                             me->SetPosition(me->GetPositionX(), me->GetPositionY(), flyTarget->GetPositionZ(), flyTarget->GetOrientation());
+                        }
                     }
                 }
+                    
             }
 
             events.Update(diff);
@@ -780,6 +799,7 @@ public:
                     events.RepeatEvent(urand(9000, 17000));
                     break;
                 case EVENT_OVERLOAD:
+                   
                     Talk(EMOTE_BRUNDIR_OVERLOAD);
                     me->CastSpell(me, SPELL_OVERLOAD, true);
                     events.RescheduleEvent(EVENT_OVERLOAD, urand(25000, 40000));
@@ -801,23 +821,32 @@ public:
                         _flyTargetGUID = oldVictim->GetGUID();
                         me->SetRegeneratingHealth(false);
                         me->SetDisableGravity(true);
-
+                       
                         me->CombatStop();
                         me->StopMoving();
                         me->SetReactState(REACT_PASSIVE);
                         me->SetGuidValue(UNIT_FIELD_TARGET, ObjectGuid::Empty);
                         me->SetUnitFlag(UNIT_FLAG_STUNNED);
-                        me->SendMonsterMove(oldVictim->GetPositionX(), oldVictim->GetPositionY(), oldVictim->GetPositionZ() + 15, 1500, SPLINEFLAG_FLYING);
-
+                      //  LOG_INFO("server.worldserver", "is Run Here!'{}'", oldVictim->GetPositionX());
+                        // LOG_INFO("server.worldserver", "X:'{}',Y:'{}',Z:'{}'",oldVictim->GetPositionX().ToString(), oldVictim->GetPositionY().ToString(), oldVictim->GetPositionZ().ToString());
+                      //  me->SendMonsterMove(oldVictim->GetPositionX(), oldVictim->GetPositionY(), oldVictim->GetPositionZ() + 15, 1500, SPLINEFLAG_FLYING);//15  oldVictim 原版
+                        tempX = me->GetPositionX();
+                        tempY = me->GetPositionY();
+                        tempZ = me->GetPositionZ() + 15;
+                        
+                        //me->MonsterMoveWithSpeed(tempX, tempY, tempZ, 5);
+                        me->GetMotionMaster()->MoveTakeoff(0, tempX, tempY, tempZ,5);
                         me->CastSpell(me, SPELL_LIGHTNING_TENDRILS, true);
-                        me->CastSpell(me, 61883, true);
+                        me->CastSpell(me, 61883, true); //闪电效果
+                        
                         events.ScheduleEvent(EVENT_LIGHTNING_LAND, 16000);
                         break;
                     }
                 case EVENT_LIGHTNING_LAND:
                     {
-                        float speed = me->GetDistance(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()) / (1000.0f * 0.001f);
-                        me->MonsterMoveWithSpeed(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), speed);
+                       // float speed = me->GetDistance(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()) / (1000.0f * 0.001f);
+                        //me->MonsterMoveWithSpeed(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), speed);
+                        me->GetMotionMaster()->MoveLand(0, me->GetPositionX(), me->GetPositionY(), tempZ-15,5);
                         _flyPhase = false;
                         events.ScheduleEvent(EVENT_LAND_LAND, 1000);
                         break;
