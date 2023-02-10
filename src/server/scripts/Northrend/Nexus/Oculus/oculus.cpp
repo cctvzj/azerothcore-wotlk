@@ -355,13 +355,10 @@ public:
 
         void IsSummonedBy(WorldObject* summoner) override
         {
-         //   std::string_view text = "is run here!!!";
-           
-            if (summoner->GetTypeId() != TYPEID_PLAYER)
+            if (summoner->GetTypeId() != TYPEID_UNIT)
             {
                 return;
             }
-         //   LOG_INFO("server.worldserver", text);
             if (m_pInstance->GetBossState(DATA_EREGOS) == IN_PROGRESS)
                 if (Creature* eregos = me->FindNearestCreature(NPC_EREGOS, 450.0f, true))
                     eregos->DespawnOrUnsummon(); // On retail this kills abusive call of drake during engaged Eregos
