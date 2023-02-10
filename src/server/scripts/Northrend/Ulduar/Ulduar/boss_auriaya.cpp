@@ -356,7 +356,7 @@ public:
         void Reset() override
         {
             summons.DespawnAll();
-            _feralRushTimer = 3000;
+            _feralRushTimer = 30000;
             _feralPounceTimer = 0;
             _feralEssenceStack = 8;
 
@@ -410,7 +410,7 @@ public:
             _feralRushTimer += diff;
             _feralPounceTimer += diff;
 
-            if (_feralRushTimer >= 6000)
+            if (_feralRushTimer >= 60000)
             {
                 DoResetThreatList();
                 if (!UpdateVictim())
@@ -419,7 +419,7 @@ public:
                 me->CastSpell(me->GetVictim(), SPELL_FERAL_RUSH, true);
                 _feralRushTimer = 0;
             }
-            else if (_feralPounceTimer >= 6000)
+            else if (_feralPounceTimer >= 60000)
             {
                 me->CastSpell(me->GetVictim(), SPELL_FERAL_POUNCE, false);
                 _feralPounceTimer = 0;
