@@ -21,51 +21,50 @@
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
 #include "ulduar.h"
-#include "Log.h"
 
 enum AssemblySpells
 {
     // Any boss
-    SPELL_SUPERCHARGE               = 61920,
-    SPELL_BERSERK                   = 47008,
+    SPELL_SUPERCHARGE = 61920,
+    SPELL_BERSERK = 47008,
 
     // Steelbreaker
-    SPELL_HIGH_VOLTAGE_10           = 61890,
-    SPELL_HIGH_VOLTAGE_25           = 63498,
-    SPELL_FUSION_PUNCH_10           = 61903,
-    SPELL_FUSION_PUNCH_25           = 63493,
-    SPELL_STATIC_DISRUPTION_10      = 61911,
-    SPELL_STATIC_DISRUPTION_25      = 63495,
-    SPELL_OVERWHELMING_POWER_10     = 64637,
-    SPELL_OVERWHELMING_POWER_25     = 61888,
-    SPELL_ELECTRICAL_CHARGE         = 61902,
+    SPELL_HIGH_VOLTAGE_10 = 61890,
+    SPELL_HIGH_VOLTAGE_25 = 63498,
+    SPELL_FUSION_PUNCH_10 = 61903,
+    SPELL_FUSION_PUNCH_25 = 63493,
+    SPELL_STATIC_DISRUPTION_10 = 61911,
+    SPELL_STATIC_DISRUPTION_25 = 63495,
+    SPELL_OVERWHELMING_POWER_10 = 64637,
+    SPELL_OVERWHELMING_POWER_25 = 61888,
+    SPELL_ELECTRICAL_CHARGE = 61902,
 
     // Runemaster Molgeim
-    SPELL_SHIELD_OF_RUNES_BUFF      = 62277,
-    SPELL_SHIELD_OF_RUNES_10        = 62274,
-    SPELL_SHIELD_OF_RUNES_25        = 63489,
-    SPELL_RUNE_OF_POWER             = 61973,
-    SPELL_RUNE_OF_DEATH_10          = 62269,
-    SPELL_RUNE_OF_DEATH_25          = 63490,
-    SPELL_RUNE_OF_SUMMONING         = 62273,
-    SPELL_RUNE_OF_SUMMONING_SUMMON  = 62020,
-    SPELL_LIGHTNING_BLAST_10        = 62054,
-    SPELL_LIGHTNING_BLAST_25        = 63491,
-    CREATURE_LIGHTNING_ELEMENTAL    = 32958,
-    CREATURE_RUNE_OF_SUMMONING      = 33051,
+    SPELL_SHIELD_OF_RUNES_BUFF = 62277,
+    SPELL_SHIELD_OF_RUNES_10 = 62274,
+    SPELL_SHIELD_OF_RUNES_25 = 63489,
+    SPELL_RUNE_OF_POWER = 61973,
+    SPELL_RUNE_OF_DEATH_10 = 62269,
+    SPELL_RUNE_OF_DEATH_25 = 63490,
+    SPELL_RUNE_OF_SUMMONING = 62273,
+    SPELL_RUNE_OF_SUMMONING_SUMMON = 62020,
+    SPELL_LIGHTNING_BLAST_10 = 62054,
+    SPELL_LIGHTNING_BLAST_25 = 63491,
+    CREATURE_LIGHTNING_ELEMENTAL = 32958,
+    CREATURE_RUNE_OF_SUMMONING = 33051,
     SPELL_RUNE_OF_POWER_OOC_CHANNEL = 61975,
 
     // Stormcaller Brundir
-    SPELL_CHAIN_LIGHTNING_10        = 61879,
-    SPELL_CHAIN_LIGHTNING_25        = 63479,
-    SPELL_OVERLOAD_10               = 61869,
-    SPELL_OVERLOAD_25               = 63481,
-    SPELL_LIGHTNING_WHIRL_10        = 61915,
-    SPELL_LIGHTNING_WHIRL_25        = 63483,
-    SPELL_LIGHTNING_TENDRILS_10     = 61887,
-    SPELL_LIGHTNING_TENDRILS_25     = 63486,
-    SPELL_STORMSHIELD               = 64187,
-    SPELL_LIGHTNING_CHANNEL_PRE     = 61942,
+    SPELL_CHAIN_LIGHTNING_10 = 61879,
+    SPELL_CHAIN_LIGHTNING_25 = 63479,
+    SPELL_OVERLOAD_10 = 61869,
+    SPELL_OVERLOAD_25 = 63481,
+    SPELL_LIGHTNING_WHIRL_10 = 61915,
+    SPELL_LIGHTNING_WHIRL_25 = 63483,
+    SPELL_LIGHTNING_TENDRILS_10 = 61887,
+    SPELL_LIGHTNING_TENDRILS_25 = 63486,
+    SPELL_STORMSHIELD = 64187,
+    SPELL_LIGHTNING_CHANNEL_PRE = 61942,
 };
 
 #define SPELL_HIGH_VOLTAGE          RAID_MODE(SPELL_HIGH_VOLTAGE_10, SPELL_HIGH_VOLTAGE_25)
@@ -83,60 +82,61 @@ enum AssemblySpells
 enum eEnums
 {
     // Steelbreaker
-    EVENT_FUSION_PUNCH          = 1,
-    EVENT_STATIC_DISRUPTION     = 2,
-    EVENT_OVERWHELMING_POWER    = 3,
+    EVENT_FUSION_PUNCH = 1,
+    EVENT_STATIC_DISRUPTION = 2,
+    EVENT_OVERWHELMING_POWER = 3,
     //EVENT_CHECK_MAIN_TANK     = 4,
 
     // Molgeim
-    EVENT_RUNE_OF_POWER         = 11,
-    EVENT_SHIELD_OF_RUNES       = 12,
-    EVENT_RUNE_OF_DEATH         = 13,
-    EVENT_RUNE_OF_SUMMONING     = 14,
-    EVENT_LIGHTNING_BLAST       = 15,
+    EVENT_RUNE_OF_POWER = 11,
+    EVENT_SHIELD_OF_RUNES = 12,
+    EVENT_RUNE_OF_DEATH = 13,
+    EVENT_RUNE_OF_SUMMONING = 14,
+    EVENT_LIGHTNING_BLAST = 15,
 
     // Brundir
-    EVENT_CHAIN_LIGHTNING       = 21,
-    EVENT_OVERLOAD              = 22,
-    EVENT_LIGHTNING_WHIRL       = 23,
-    EVENT_LIGHTNING_TENDRILS    = 24,
-    EVENT_LIGHTNING_LAND        = 25,
-    EVENT_LAND_LAND             = 26,
+    EVENT_CHAIN_LIGHTNING = 21,
+    EVENT_OVERLOAD = 22,
+    EVENT_LIGHTNING_WHIRL = 23,
+    EVENT_LIGHTNING_TENDRILS = 24,
+    EVENT_LIGHTNING_LAND = 25,
+    EVENT_LAND_LAND = 26,
+    EVENT_LIGHTNING_FLIGHT = 27,
 
-    EVENT_ENRAGE                = 30
+    EVENT_ENRAGE = 30
 };
 
 enum AssemblyYells
 {
-    SAY_STEELBREAKER_AGGRO                      = 0,
-    SAY_STEELBREAKER_SLAY                       = 1,
-    SAY_STEELBREAKER_POWER                      = 2,
-    SAY_STEELBREAKER_DEATH                      = 3,
-    SAY_STEELBREAKER_ENCOUNTER_DEFEATED         = 4,
-    SAY_STEELBREAKER_BERSERK                    = 5,
+    SAY_STEELBREAKER_AGGRO = 0,
+    SAY_STEELBREAKER_SLAY = 1,
+    SAY_STEELBREAKER_POWER = 2,
+    SAY_STEELBREAKER_DEATH = 3,
+    SAY_STEELBREAKER_ENCOUNTER_DEFEATED = 4,
+    SAY_STEELBREAKER_BERSERK = 5,
 
-    SAY_MOLGEIM_AGGRO                           = 0,
-    SAY_MOLGEIM_SLAY                            = 1,
-    SAY_MOLGEIM_RUNE_DEATH                      = 2,
-    SAY_MOLGEIM_SUMMON                          = 3,
-    SAY_MOLGEIM_DEATH                           = 4,
-    SAY_MOLGEIM_ENCOUNTER_DEFEATED              = 5,
-    SAY_MOLGEIM_BERSERK                         = 6,
+    SAY_MOLGEIM_AGGRO = 0,
+    SAY_MOLGEIM_SLAY = 1,
+    SAY_MOLGEIM_RUNE_DEATH = 2,
+    SAY_MOLGEIM_SUMMON = 3,
+    SAY_MOLGEIM_DEATH = 4,
+    SAY_MOLGEIM_ENCOUNTER_DEFEATED = 5,
+    SAY_MOLGEIM_BERSERK = 6,
 
-    SAY_BRUNDIR_AGGRO                           = 0,
-    SAY_BRUNDIR_SLAY                            = 1,
-    SAY_BRUNDIR_SPECIAL                         = 2,
-    SAY_BRUNDIR_FLIGHT                          = 3,
-    SAY_BRUNDIR_DEATH                           = 4,
-    SAY_BRUNDIR_ENCOUNTER_DEFEATED              = 5,
-    SAY_BRUNDIR_BERSERK                         = 6,
-    EMOTE_BRUNDIR_OVERLOAD                      = 7
+    SAY_BRUNDIR_AGGRO = 0,
+    SAY_BRUNDIR_SLAY = 1,
+    SAY_BRUNDIR_SPECIAL = 2,
+    SAY_BRUNDIR_FLIGHT = 3,
+    SAY_BRUNDIR_DEATH = 4,
+    SAY_BRUNDIR_ENCOUNTER_DEFEATED = 5,
+    SAY_BRUNDIR_BERSERK = 6,
+    EMOTE_BRUNDIR_OVERLOAD = 7
 };
 
 enum Misc
 {
-    ACTION_ADD_CHARGE           = 1,
-    POINT_CHANNEL_STEELBREAKER  = 1
+    ACTION_ADD_CHARGE = 1,
+    POINT_CHANNEL_STEELBREAKER = 1
 };
 
 bool IsEncounterComplete(InstanceScript* pInstance, Creature* me)
@@ -229,7 +229,7 @@ public:
             me->RemoveAllAuras();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             if (pInstance)
                 pInstance->SetData(TYPE_ASSEMBLY, IN_PROGRESS);
@@ -247,15 +247,15 @@ public:
             {
                 switch (boss->GetEntry())
                 {
-                    case NPC_STEELBREAKER:
-                        boss->AI()->Talk(SAY_STEELBREAKER_AGGRO);
-                        break;
-                    case NPC_MOLGEIM:
-                        boss->AI()->Talk(SAY_MOLGEIM_AGGRO);
-                        break;
-                    case NPC_BRUNDIR:
-                        boss->AI()->Talk(SAY_BRUNDIR_AGGRO);
-                        break;
+                case NPC_STEELBREAKER:
+                    boss->AI()->Talk(SAY_STEELBREAKER_AGGRO);
+                    break;
+                case NPC_MOLGEIM:
+                    boss->AI()->Talk(SAY_MOLGEIM_AGGRO);
+                    break;
+                case NPC_BRUNDIR:
+                    boss->AI()->Talk(SAY_BRUNDIR_AGGRO);
+                    break;
                 }
             }
 
@@ -274,16 +274,16 @@ public:
 
             switch (_phase)
             {
-                case 1:
-                    events.RescheduleEvent(EVENT_FUSION_PUNCH, 15000);
-                    break;
-                case 2:
-                    events.RescheduleEvent(EVENT_STATIC_DISRUPTION, 20000);
-                    break;
-                case 3:
-                    me->ResetLootMode();
-                    events.RescheduleEvent(EVENT_OVERWHELMING_POWER, 8000);
-                    break;
+            case 1:
+                events.RescheduleEvent(EVENT_FUSION_PUNCH, 15000);
+                break;
+            case 2:
+                events.RescheduleEvent(EVENT_STATIC_DISRUPTION, 20000);
+                break;
+            case 3:
+                me->ResetLootMode();
+                events.RescheduleEvent(EVENT_OVERWHELMING_POWER, 8000);
+                break;
             }
         }
 
@@ -338,27 +338,27 @@ public:
             if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
-            switch(events.ExecuteEvent())
+            switch (events.ExecuteEvent())
             {
-                case EVENT_FUSION_PUNCH:
-                    me->CastSpell(me->GetVictim(), SPELL_FUSION_PUNCH, false);
-                    events.RepeatEvent(urand(15000, 20000));
-                    break;
-                case EVENT_STATIC_DISRUPTION:
-                    if (Unit* pTarget = SelectTarget(SelectTargetMethod::MinDistance, 0, 0, true))
-                        me->CastSpell(pTarget, SPELL_STATIC_DISRUPTION, false);
+            case EVENT_FUSION_PUNCH:
+                me->CastSpell(me->GetVictim(), SPELL_FUSION_PUNCH, false);
+                events.RepeatEvent(urand(15000, 20000));
+                break;
+            case EVENT_STATIC_DISRUPTION:
+                if (Unit* pTarget = SelectTarget(SelectTargetMethod::MinDistance, 0, 0, true))
+                    me->CastSpell(pTarget, SPELL_STATIC_DISRUPTION, false);
 
-                    events.RepeatEvent(urand(20000, 40000));
-                    break;
-                case EVENT_OVERWHELMING_POWER:
-                    Talk(SAY_STEELBREAKER_POWER);
-                    me->CastSpell(me->GetVictim(), SPELL_OVERWHELMING_POWER, true);
-                    events.RepeatEvent(RAID_MODE(61000, 36000));
-                    break;
-                case EVENT_ENRAGE:
-                    Talk(SAY_STEELBREAKER_BERSERK);
-                    me->CastSpell(me, SPELL_BERSERK, true);
-                    break;
+                events.RepeatEvent(urand(20000, 40000));
+                break;
+            case EVENT_OVERWHELMING_POWER:
+                Talk(SAY_STEELBREAKER_POWER);
+                me->CastSpell(me->GetVictim(), SPELL_OVERWHELMING_POWER, true);
+                events.RepeatEvent(RAID_MODE(61000, 36000));
+                break;
+            case EVENT_ENRAGE:
+                Talk(SAY_STEELBREAKER_BERSERK);
+                me->CastSpell(me, SPELL_BERSERK, true);
+                break;
             }
 
             DoMeleeAttackIfReady();
@@ -425,7 +425,7 @@ public:
             me->RemoveAllAuras();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             me->InterruptNonMeleeSpells(false);
             me->setActive(true);
@@ -451,17 +451,17 @@ public:
 
             switch (_phase)
             {
-                case 1:
-                    events.RescheduleEvent(EVENT_SHIELD_OF_RUNES, 20000);
-                    events.RescheduleEvent(EVENT_RUNE_OF_POWER, 30000);
-                    break;
-                case 2:
-                    events.RescheduleEvent(EVENT_RUNE_OF_DEATH, 35000);
-                    break;
-                case 3:
-                    me->ResetLootMode();
-                    events.RescheduleEvent(EVENT_RUNE_OF_SUMMONING, urand(20000, 30000));
-                    break;
+            case 1:
+                events.RescheduleEvent(EVENT_SHIELD_OF_RUNES, 20000);
+                events.RescheduleEvent(EVENT_RUNE_OF_POWER, 30000);
+                break;
+            case 2:
+                events.RescheduleEvent(EVENT_RUNE_OF_DEATH, 35000);
+                break;
+            case 3:
+                me->ResetLootMode();
+                events.RescheduleEvent(EVENT_RUNE_OF_SUMMONING, urand(20000, 30000));
+                break;
             }
         }
 
@@ -507,39 +507,39 @@ public:
             if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
-            switch(events.ExecuteEvent())
+            switch (events.ExecuteEvent())
             {
-                case EVENT_RUNE_OF_POWER:
-                    {
-                        Unit* target = DoSelectLowestHpFriendly(60);
-                        if (!target || !target->IsAlive())
-                            target = me;
+            case EVENT_RUNE_OF_POWER:
+            {
+                Unit* target = DoSelectLowestHpFriendly(60);
+                if (!target || !target->IsAlive())
+                    target = me;
 
-                        me->CastSpell(target, SPELL_RUNE_OF_POWER, true);
-                        events.RepeatEvent(60000);
-                        break;
-                    }
-                case EVENT_SHIELD_OF_RUNES:
-                    me->CastSpell(me, SPELL_SHIELD_OF_RUNES, false);
-                    events.RescheduleEvent(EVENT_SHIELD_OF_RUNES, urand(27000, 34000));
-                    break;
-                case EVENT_RUNE_OF_DEATH:
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random))
-                        me->CastSpell(target, SPELL_RUNE_OF_DEATH, true);
+                me->CastSpell(target, SPELL_RUNE_OF_POWER, true);
+                events.RepeatEvent(60000);
+                break;
+            }
+            case EVENT_SHIELD_OF_RUNES:
+                me->CastSpell(me, SPELL_SHIELD_OF_RUNES, false);
+                events.RescheduleEvent(EVENT_SHIELD_OF_RUNES, urand(27000, 34000));
+                break;
+            case EVENT_RUNE_OF_DEATH:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random))
+                    me->CastSpell(target, SPELL_RUNE_OF_DEATH, true);
 
-                    Talk(SAY_MOLGEIM_RUNE_DEATH);
-                    events.RepeatEvent(urand(30000, 40000));
-                    break;
-                case EVENT_RUNE_OF_SUMMONING:
-                    Talk(SAY_MOLGEIM_SUMMON);
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
-                        me->CastSpell(target, SPELL_RUNE_OF_SUMMONING);
-                    events.RepeatEvent(urand(30000, 45000));
-                    break;
-                case EVENT_ENRAGE:
-                    me->CastSpell(me, SPELL_BERSERK, true);
-                    Talk(SAY_MOLGEIM_BERSERK);
-                    break;
+                Talk(SAY_MOLGEIM_RUNE_DEATH);
+                events.RepeatEvent(urand(30000, 40000));
+                break;
+            case EVENT_RUNE_OF_SUMMONING:
+                Talk(SAY_MOLGEIM_SUMMON);
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
+                    me->CastSpell(target, SPELL_RUNE_OF_SUMMONING);
+                events.RepeatEvent(urand(30000, 45000));
+                break;
+            case EVENT_ENRAGE:
+                me->CastSpell(me, SPELL_BERSERK, true);
+                Talk(SAY_MOLGEIM_BERSERK);
+                break;
             }
 
             DoMeleeAttackIfReady();
@@ -612,17 +612,11 @@ public:
         EventMap events;
         InstanceScript* pInstance;
         uint32 _phase;
-        bool _flyPhase;
         ObjectGuid _flyTargetGUID;
         uint32 _channelTimer;
 
         bool _stunnedAchievement;
 
-       
-
-        float tempX;
-        float tempY;
-        float tempZ;
         void Reset() override
         {
             me->SetLootMode(0);
@@ -630,7 +624,6 @@ public:
 
             _channelTimer = 0;
             _phase = 0;
-            _flyPhase = false;
             _flyTargetGUID.Clear();
             _stunnedAchievement = true;
 
@@ -649,14 +642,14 @@ public:
             me->RemoveAllAuras();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             me->InterruptNonMeleeSpells(false);
             me->setActive(true);
             me->SetInCombatWithZone();
             events.ScheduleEvent(EVENT_ENRAGE, 900000);
             UpdatePhase();
-          
+
             if (!pInstance)
                 return;
 
@@ -675,18 +668,18 @@ public:
 
             switch (_phase)
             {
-                case 1:
-                    events.RescheduleEvent(EVENT_CHAIN_LIGHTNING, urand(9000, 17000));
-                    events.RescheduleEvent(EVENT_OVERLOAD, urand(25000, 40000));
-                    break;
-                case 2:
-                    events.RescheduleEvent(EVENT_LIGHTNING_WHIRL, urand(20000, 40000));
-                    break;
-                case 3:
-                    me->ResetLootMode();
-                    me->CastSpell(me, SPELL_STORMSHIELD, true);
-                    events.RescheduleEvent(EVENT_LIGHTNING_TENDRILS, urand(15000, 16000));
-                    break;
+            case 1:
+                events.RescheduleEvent(EVENT_CHAIN_LIGHTNING, urand(9000, 17000));
+                events.RescheduleEvent(EVENT_OVERLOAD, urand(25000, 40000));
+                break;
+            case 2:
+                events.RescheduleEvent(EVENT_LIGHTNING_WHIRL, urand(20000, 40000));
+                break;
+            case 3:
+                me->ResetLootMode();
+                me->CastSpell(me, SPELL_STORMSHIELD, true);
+                events.RescheduleEvent(EVENT_LIGHTNING_TENDRILS, urand(15000, 16000));
+                break;
             }
         }
 
@@ -756,35 +749,9 @@ public:
                     me->GetMotionMaster()->MovePoint(POINT_CHANNEL_STEELBREAKER, 1587.18f + 10.0f * cos(o), 121.02f + 10.0f * std::sin(o), 427.3f);
                 }
             }
-           
+
             if (!UpdateVictim())
                 return;
-           
-            if (_flyPhase)
-            {
-                if (me->GetPositionZ()<tempZ)
-                {
-                   // LOG_INFO("server.worldserver", "is Run Here! the unit is moving");
-                }
-                else
-                {
-                    if (Unit* flyTarget = ObjectAccessor::GetUnit(*me, _flyTargetGUID))
-                    {
-                        if (me->GetDistance2d(flyTarget) >= 6)
-                        {
-                            //LOG_INFO("server.worldserver", "is Run Here! the unit is NOT moving'{}'",flyTarget->GetName());
-                            //  float speed = me->GetDistance(flyTarget->GetPositionX(), flyTarget->GetPositionY(), flyTarget->GetPositionZ()+15) / (1500.0f * 0.001f);
-                             // me->SendMonsterMove(flyTarget->GetPositionX(), flyTarget->GetPositionY(), flyTarget->GetPositionZ() + 15, 1500, SPLINEFLAG_FLYING); //原版
-                             me->MonsterMoveWithSpeed(flyTarget->GetPositionX(), flyTarget->GetPositionY(), tempZ, 4);
-                         //   me->GetMotionMaster()->MovePoint(2, flyTarget->GetPositionX(), flyTarget->GetPositionY(), tempZ,true,true,MOTION_SLOT_IDLE, flyTarget->GetOrientation());
-
-                         //   me->GetMotionMaster()->MoveFollow(flyTarget,0,0,MOTION_SLOT_IDLE);
-                             me->SetPosition(me->GetPositionX(), me->GetPositionY(), flyTarget->GetPositionZ(), flyTarget->GetOrientation());
-                        }
-                    }
-                }
-                    
-            }
 
             events.Update(diff);
             if (me->HasUnitState(UNIT_STATE_CASTING))
@@ -792,84 +759,82 @@ public:
 
             switch (events.ExecuteEvent())
             {
-                case EVENT_CHAIN_LIGHTNING:
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
-                        me->CastSpell(target, SPELL_CHAIN_LIGHTNING, false);
+            case EVENT_CHAIN_LIGHTNING:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
+                    me->CastSpell(target, SPELL_CHAIN_LIGHTNING, false);
 
-                    events.RepeatEvent(urand(9000, 17000));
-                    break;
-                case EVENT_OVERLOAD:
-                   
-                    Talk(EMOTE_BRUNDIR_OVERLOAD);
-                    me->CastSpell(me, SPELL_OVERLOAD, true);
-                    events.RescheduleEvent(EVENT_OVERLOAD, urand(25000, 40000));
-                    break;
-                case EVENT_LIGHTNING_WHIRL:
-                    Talk(SAY_BRUNDIR_SPECIAL);
-                    me->CastSpell(me, SPELL_LIGHTNING_WHIRL, true);
-                    events.RepeatEvent(urand(10000, 25000));
-                    break;
-                case EVENT_LIGHTNING_TENDRILS:
-                    {
-                        // Reschedule old
-                        events.RepeatEvent(35000);
-                        events.DelayEvents(18000);
-                        Talk(SAY_BRUNDIR_FLIGHT);
+                events.RepeatEvent(urand(9000, 17000));
+                break;
+            case EVENT_OVERLOAD:
+                Talk(EMOTE_BRUNDIR_OVERLOAD);
+                me->CastSpell(me, SPELL_OVERLOAD, true);
+                events.RescheduleEvent(EVENT_OVERLOAD, urand(25000, 40000));
+                break;
+            case EVENT_LIGHTNING_WHIRL:
+                Talk(SAY_BRUNDIR_SPECIAL);
+                me->CastSpell(me, SPELL_LIGHTNING_WHIRL, true);
+                events.RepeatEvent(urand(10000, 25000));
+                break;
+            case EVENT_LIGHTNING_TENDRILS:
+            {
+                // Reschedule old
+                events.RepeatEvent(35000);
+                events.DelayEvents(18000);
+                Talk(SAY_BRUNDIR_FLIGHT);
 
-                        _flyPhase = true;
-                        Unit* oldVictim = me->GetVictim();
-                        _flyTargetGUID = oldVictim->GetGUID();
-                        me->SetRegeneratingHealth(false);
-                        me->SetDisableGravity(true);
-                       
-                        me->CombatStop();
-                        me->StopMoving();
-                        me->SetReactState(REACT_PASSIVE);
-                        me->SetGuidValue(UNIT_FIELD_TARGET, ObjectGuid::Empty);
-                        me->SetUnitFlag(UNIT_FLAG_STUNNED);
-                      //  LOG_INFO("server.worldserver", "is Run Here!'{}'", oldVictim->GetPositionX());
-                        // LOG_INFO("server.worldserver", "X:'{}',Y:'{}',Z:'{}'",oldVictim->GetPositionX().ToString(), oldVictim->GetPositionY().ToString(), oldVictim->GetPositionZ().ToString());
-                      //  me->SendMonsterMove(oldVictim->GetPositionX(), oldVictim->GetPositionY(), oldVictim->GetPositionZ() + 15, 1500, SPLINEFLAG_FLYING);//15  oldVictim 原版
-                        tempX = me->GetPositionX();
-                        tempY = me->GetPositionY();
-                        tempZ = me->GetPositionZ() + 15;
-                        
-                        //me->MonsterMoveWithSpeed(tempX, tempY, tempZ, 5);
-                        me->GetMotionMaster()->MoveTakeoff(0, tempX, tempY, tempZ,5);
-                        me->CastSpell(me, SPELL_LIGHTNING_TENDRILS, true);
-                        me->CastSpell(me, 61883, true); //闪电效果
-                        
-                        events.ScheduleEvent(EVENT_LIGHTNING_LAND, 16000);
-                        break;
-                    }
-                case EVENT_LIGHTNING_LAND:
-                    {
-                       // float speed = me->GetDistance(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()) / (1000.0f * 0.001f);
-                        //me->MonsterMoveWithSpeed(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), speed);
-                        me->GetMotionMaster()->MoveLand(0, me->GetPositionX(), me->GetPositionY(), tempZ-15,5);
-                        _flyPhase = false;
-                        events.ScheduleEvent(EVENT_LAND_LAND, 1000);
-                        break;
-                    }
-                case EVENT_LAND_LAND:
-                    me->SetCanFly(false);
-                    me->SetReactState(REACT_AGGRESSIVE);
-                    me->SetDisableGravity(false);
-                    if (Unit* flyTarget = ObjectAccessor::GetUnit(*me, _flyTargetGUID))
-                    {
-                        me->Attack(flyTarget, false);
-                    }
+                Unit* oldVictim = me->GetVictim();
+                _flyTargetGUID = oldVictim->GetGUID();
+                me->SetRegeneratingHealth(false);
+                me->SetDisableGravity(true);
+                me->SetHover(true);
 
-                    me->SetRegeneratingHealth(true);
-                    _flyTargetGUID.Clear();
-                    me->RemoveAura(SPELL_LIGHTNING_TENDRILS);
-                    me->RemoveAura(61883);
-                    DoResetThreatList();
-                    break;
-                case EVENT_ENRAGE:
-                    Talk(SAY_BRUNDIR_BERSERK);
-                    me->CastSpell(me, SPELL_BERSERK, true);
-                    break;
+                me->CombatStop();
+                me->StopMoving();
+                me->SetReactState(REACT_PASSIVE);
+                me->SetGuidValue(UNIT_FIELD_TARGET, ObjectGuid::Empty);
+                me->SetUnitFlag(UNIT_FLAG_STUNNED);
+
+                me->CastSpell(me, SPELL_LIGHTNING_TENDRILS, true);
+                me->CastSpell(me, 61883, true);
+                events.ScheduleEvent(EVENT_LIGHTNING_LAND, 16000);
+                events.ScheduleEvent(EVENT_LIGHTNING_FLIGHT, 1s);
+                break;
+            }
+            case EVENT_LIGHTNING_LAND:
+            {
+                float speed = me->GetDistance(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()) / (1000.0f * 0.001f);
+                me->MonsterMoveWithSpeed(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), speed);
+                events.ScheduleEvent(EVENT_LAND_LAND, 1000);
+                break;
+            }
+            case EVENT_LAND_LAND:
+                me->SetCanFly(false);
+                me->SetHover(false);
+                me->SetReactState(REACT_AGGRESSIVE);
+                me->SetDisableGravity(false);
+                if (Unit* flyTarget = ObjectAccessor::GetUnit(*me, _flyTargetGUID))
+                {
+                    me->Attack(flyTarget, false);
+                }
+
+                me->SetRegeneratingHealth(true);
+                _flyTargetGUID.Clear();
+                me->RemoveAura(SPELL_LIGHTNING_TENDRILS);
+                me->RemoveAura(61883);
+                DoResetThreatList();
+                events.CancelEvent(EVENT_LIGHTNING_FLIGHT);
+                break;
+            case EVENT_ENRAGE:
+                Talk(SAY_BRUNDIR_BERSERK);
+                me->CastSpell(me, SPELL_BERSERK, true);
+                break;
+            case EVENT_LIGHTNING_FLIGHT:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 0.0f, true))
+                {
+                    me->GetMotionMaster()->MovePoint(0, *target);
+                }
+                events.ScheduleEvent(EVENT_LIGHTNING_FLIGHT, 6s);
+                break;
             }
 
             DoMeleeAttackIfReady();
