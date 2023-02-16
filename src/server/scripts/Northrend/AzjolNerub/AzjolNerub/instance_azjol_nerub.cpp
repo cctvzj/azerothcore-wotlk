@@ -51,6 +51,7 @@ public:
     {
         instance_azjol_nerub_InstanceScript(Map* map) : InstanceScript(map)
         {
+            SetHeaders(DataHeader);
             SetBossNumber(MAX_ENCOUNTERS);
             LoadBossBoundaries(boundaries);
             LoadDoorData(doorData);
@@ -61,17 +62,17 @@ public:
         {
             switch (creature->GetEntry())
             {
-                case NPC_SKITTERING_SWARMER:
-                case NPC_SKITTERING_INFECTIOR:
-                    if (Creature* krikthir = GetCreature((DATA_KRIKTHIR_THE_GATEWATCHER_EVENT)))
-                        krikthir->AI()->JustSummoned(creature);
-                    break;
-                case NPC_ANUB_AR_CHAMPION:
-                case NPC_ANUB_AR_NECROMANCER:
-                case NPC_ANUB_AR_CRYPTFIEND:
-                    if (Creature* hadronox = GetCreature(DATA_HADRONOX_EVENT))
-                        hadronox->AI()->JustSummoned(creature);
-                    break;
+            case NPC_SKITTERING_SWARMER:
+            case NPC_SKITTERING_INFECTIOR:
+                if (Creature* krikthir = GetCreature((DATA_KRIKTHIR_THE_GATEWATCHER_EVENT)))
+                    krikthir->AI()->JustSummoned(creature);
+                break;
+            case NPC_ANUB_AR_CHAMPION:
+            case NPC_ANUB_AR_NECROMANCER:
+            case NPC_ANUB_AR_CRYPTFIEND:
+                if (Creature* hadronox = GetCreature(DATA_HADRONOX_EVENT))
+                    hadronox->AI()->JustSummoned(creature);
+                break;
             }
 
             InstanceScript::OnCreatureCreate(creature);
@@ -81,12 +82,12 @@ public:
         {
             switch (go->GetEntry())
             {
-                case GO_KRIKTHIR_DOORS:
-                case GO_ANUBARAK_DOORS1:
-                case GO_ANUBARAK_DOORS2:
-                case GO_ANUBARAK_DOORS3:
-                    AddDoor(go, true);
-                    break;
+            case GO_KRIKTHIR_DOORS:
+            case GO_ANUBARAK_DOORS1:
+            case GO_ANUBARAK_DOORS2:
+            case GO_ANUBARAK_DOORS3:
+                AddDoor(go, true);
+                break;
             }
         }
 
@@ -94,57 +95,13 @@ public:
         {
             switch (go->GetEntry())
             {
-                case GO_KRIKTHIR_DOORS:
-                case GO_ANUBARAK_DOORS1:
-                case GO_ANUBARAK_DOORS2:
-                case GO_ANUBARAK_DOORS3:
-                    AddDoor(go, false);
-                    break;
+            case GO_KRIKTHIR_DOORS:
+            case GO_ANUBARAK_DOORS1:
+            case GO_ANUBARAK_DOORS2:
+            case GO_ANUBARAK_DOORS3:
+                AddDoor(go, false);
+                break;
             }
-        }
-
-        bool SetBossState(uint32 id, EncounterState state) override
-        {
-            return InstanceScript::SetBossState(id, state);
-        }
-
-        std::string GetSaveData() override
-        {
-            std::ostringstream saveStream;
-            saveStream << "A N " << GetBossSaveData();
-            return saveStream.str();
-        }
-
-        void Load(const char* in) override
-        {
-            if( !in )
-                return;
-
-            char dataHead1, dataHead2;
-            std::istringstream loadStream(in);
-            loadStream >> dataHead1 >> dataHead2;
-            if (dataHead1 == 'A' && dataHead2 == 'N')
-            {
-                for (uint8 i = 0; i < MAX_ENCOUNTERS; ++i)
-                {
-                    uint32 tmpState;
-                    loadStream >> tmpState;
-                    if (tmpState == IN_PROGRESS || tmpState > SPECIAL)
-                        tmpState = NOT_STARTED;
-                    SetBossState(i, EncounterState(tmpState));
-                }
-            }
-        }
-
-        ObjectGuid GetGuidData(uint32 identifier) const override
-        {
-            switch (identifier)
-            {
-            case 1:
-                return Krikthir_OG;
-            }
-
-            return ObjectGuid::Empty;
         }
     };
 
@@ -210,48 +167,9 @@ public:
     }
 };
 
-
-class npc_services_azjolnerub : public CreatureScript
-{
-public:
-   npc_services_azjolnerub() : CreatureScript("Npc_Services_AzjolNerub") { } //5H 困难模式！
-
-   bool OnGossipHello(Player* player, Creature* creature)
-   {
-       AddGossipItemFor(player, 10, "|TInterface\\icons\\Spell_Nature_Regenerate:40:40:-18|t 开启困难模式", GOSSIP_SENDER_MAIN, 1);			// Restore Health and Mana
-       AddGossipItemFor(player, 10, "|TInterface\\icons\\Achievement_BG_winAB_underXminutes:40:40:-18|t 关闭困难模式", GOSSIP_SENDER_MAIN, 2);	// Reset Instances
-      
-       SendGossipMenuFor(player, 1, creature->GetGUID());
-       return true;
-   }
-
-   bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
-   {
-       player->PlayerTalkClass->ClearMenus();
-       InstanceScript* m_pInstance= creature->GetInstanceScript();
-       switch (action)
-       {
-       case 1:
-           CloseGossipMenuFor(player);
-           Creature * Krikthir = ObjectAccessor::GetCreature(*player, m_pInstance->GetGuidData(1));
-          // uint32 originalHealth = Krikthir->GetMaxHealth();
-           Krikthir->SetMaxHealth(12345678);
-           player->GetSession()->SendNotification("Krikthir %d", Krikthir->GetMaxHealth());
-           break;
-      
-       }
-
-       return true;
-   }
-    
-};
-
-
 void AddSC_instance_azjol_nerub()
 {
-    
     new instance_azjol_nerub();
     new spell_azjol_nerub_fixate();
     new spell_azjol_nerub_web_wrap();
-    new npc_services_azjolnerub();
 }
