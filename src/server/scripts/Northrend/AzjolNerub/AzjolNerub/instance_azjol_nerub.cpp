@@ -57,7 +57,6 @@ public:
             LoadObjectData(creatureData, nullptr);
         };
 
-        ObjectGuid Krikthir_OG;
         void OnCreatureCreate(Creature* creature) override
         {
             switch (creature->GetEntry())
@@ -73,8 +72,6 @@ public:
                     if (Creature* hadronox = GetCreature(DATA_HADRONOX_EVENT))
                         hadronox->AI()->JustSummoned(creature);
                     break;
-                case NPC_KRIKTHIR_THE_GATEWATCHER:
-                    Krikthir_OG = creature->GetGUID();
             }
 
             InstanceScript::OnCreatureCreate(creature);
