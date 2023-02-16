@@ -803,35 +803,6 @@ void WorldSession::HandleSellItemOpcode(WorldPacket& recvData)
         }
 
         ItemTemplate const* pProto = pItem->GetTemplate();
-        QueryResult qr = WorldDatabase.Query("SELECT sell_price_jf FROM item_template_jf WHERE entry='{}'", pProto->ItemId);
-        uint32 jf = 0;
-        if (qr!=NULL)
-        {
-            jf = qr->Fetch()[0].Get<uint32>();
-        }
-        uint32 total = jf * count;
-        uint32 total_jf = jf * count;
-        if (total_jf > 0)
-        {
-            QueryResult qr1 = CharacterDatabase.Query("SELECT account FROM characters WHERE name='{}'", _player->GetName());
-            uint32 accountGUID= qr1->Fetch()[0].Get<uint32>();
-            QueryResult qr2 = LoginDatabase.Query("SELECT * FROM account_jf WHERE account_id='{}'", accountGUID);
-
-            if (qr2!=NULL)
-            {
-                total_jf += qr2->Fetch()[2].Get<uint32>();
-                LoginDatabase.Query("UPDATE account_jf SET account_jf='{}' WHERE account_id='{}'", total_jf, accountGUID);
-            }
-            else
-            {
-                QueryResult qr3 = LoginDatabase.Query("SELECT id,username FROM account WHERE id='{}'", accountGUID);
-                uint32 accountid = qr3->Fetch()[0].Get<uint32>();
-                std::string accountname = qr3->Fetch()[1].Get<std::string>();
-                LoginDatabase.Query("INSERT INTO account_jf VALUES ('{}','{}','{}')", accountid, accountname, total_jf);
-            }
-            _player->GetSession()->SendAreaTriggerMessage("本次售卖获得积分 %d，总积分 %d", total, total_jf);
-        }
-       // _player->GetSession()->SendAreaTriggerMessage("该物品售卖积分 %d", jf);
         if (pProto)
         {
             if (pProto->SellPrice >= 0)
@@ -909,9 +880,7 @@ void WorldSession::HandleSellItemOpcode(WorldPacket& recvData)
                     if (_player->IsInWorld())
                         pItem->SendUpdateToPlayer(_player);
                     pItem->SetState(ITEM_CHANGED, _player);
-
-                    if (jf == 0)
-                        _player->AddItemToBuyBackSlot(pNewItem, money);
+                    _player->AddItemToBuyBackSlot(pNewItem, money);
                    
 
                     if (_player->IsInWorld())
@@ -922,7 +891,6 @@ void WorldSession::HandleSellItemOpcode(WorldPacket& recvData)
                     _player->ItemRemovedQuestCheck(pItem->GetEntry(), pItem->GetCount());
                     _player->RemoveItem(pItem->GetBagSlot(), pItem->GetSlot(), true);
                     pItem->RemoveFromUpdateQueueOf(_player);
-                    if (jf == 0)
                     _player->AddItemToBuyBackSlot(pItem, money);
                     _player->UpdateTitansGrip();
                 }
